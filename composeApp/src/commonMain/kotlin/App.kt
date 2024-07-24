@@ -31,6 +31,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun App(
     answer: String,
     capturedImage: String? = null,
+    createBanner: @Composable () -> Unit,
     onClickTakePhoto: () -> Unit = {},
     onClickSendPhoto: () -> Unit = {},
     onBackToTakePhoto: () -> Unit = {},
@@ -39,36 +40,41 @@ fun App(
     MaterialTheme {
         Scaffold(
             bottomBar = {
-                Row(
-                    modifier = Modifier
-                        .background(Color.White)
-                        .padding(10.dp)
-                ) {
-                    if (answer.isNotBlank()) {
-                        CustomButton(
-                            text = "再撮影",
-                            onClick = onClickTakePhoto,
-                        )
-                        Spacer(Modifier.size(2.dp))
-                        CustomButton(
-                            text = "別の料理を要求",
-                            onClick = onClickAgain,
-                        )
-                    } else if (capturedImage == null) {
-                        CustomButton(
-                            text = "写真を撮る",
-                            onClick = onClickTakePhoto,
-                        )
-                    } else if (answer.isBlank()) {
-                        CustomButton(
-                            text = "戻る",
-                            onClick = onBackToTakePhoto,
-                        )
-                        Spacer(Modifier.size(2.dp))
-                        CustomButton(
-                            text = "送信",
-                            onClick = onClickSendPhoto,
-                        )
+                Column {
+                    createBanner()
+                    Row(
+                        modifier = Modifier
+                            .background(Color.White)
+                            .padding(10.dp)
+                    ) {
+                        if (answer.isNotBlank()) {
+                            CustomButton(
+                                text = "再撮影",
+                                onClick = onClickTakePhoto,
+                            )
+                            if (answer == "写真には食材が写っていません。") {
+                                Spacer(Modifier.size(2.dp))
+                                CustomButton(
+                                    text = "別の料理を要求",
+                                    onClick = onClickAgain,
+                                )
+                            }
+                        } else if (capturedImage == null) {
+                            CustomButton(
+                                text = "写真を撮る",
+                                onClick = onClickTakePhoto,
+                            )
+                        } else if (answer.isBlank()) {
+                            CustomButton(
+                                text = "戻る",
+                                onClick = onBackToTakePhoto,
+                            )
+                            Spacer(Modifier.size(2.dp))
+                            CustomButton(
+                                text = "送信",
+                                onClick = onClickSendPhoto,
+                            )
+                        }
                     }
                 }
             }

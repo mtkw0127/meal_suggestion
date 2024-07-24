@@ -37,6 +37,7 @@ kotlin {
             implementation(libs.camera2)
             implementation(libs.camera.view)
             implementation(libs.ai)
+            implementation(libs.google.playServices.ads)
         }
         commonMain.dependencies {
             implementation(compose.runtime)

@@ -23,7 +23,6 @@ class MainViewModel : ViewModel() {
     fun requestAnswerToAi(
         bitmap: Bitmap,
     ) {
-        _answer.value = ""
         viewModelScope.launch {
             val input = content {
                 image(bitmap)
@@ -34,7 +33,7 @@ class MainViewModel : ViewModel() {
                 )
             }
             val response = generativeModel.generateContent(input)
-            _answer.value += response.text
+            _answer.value = response.text.orEmpty()
         }
     }
 

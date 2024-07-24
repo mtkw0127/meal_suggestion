@@ -6,12 +6,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.viewinterop.AndroidView
+import com.google.android.gms.ads.AdSize.FULL_BANNER
+import com.google.android.gms.ads.AdView
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
@@ -34,9 +37,27 @@ class MainActivity : ComponentActivity() {
         setContent {
             val capturedImage by capturedImage.collectAsState()
             val answer by viewModel.answer.collectAsState()
+            val scope = rememberCoroutineScope()
             App(
                 answer = answer,
                 capturedImage = capturedImage,
+                createBanner = {
+                    AndroidView(factory = { context ->
+                        val adView = AdView(context).apply {
+                            adUnitId = if (BuildConfig.DEBUG) {
+                                "ca-app-pub-3940256099942544/9214589741"
+                            } else {
+                                "ca-app-pub-2002859886618281/4131748591"
+                            }
+                            setAdSize(FULL_BANNER)
+                        }
+                        scope.launch {
+                            com.google.android.gms.ads.AdRequest.Builder().build()
+                                .let { adView.loadAd(it) }
+                        }
+                        adView
+                    })
+                },
                 onClickTakePhoto = {
                     cameraLauncher.launch(CameraActivity.createIntent(this))
                 },
@@ -54,12 +75,4 @@ class MainActivity : ComponentActivity() {
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun AppAndroidPreview() {
-    App(
-        answer = "Answer"
-    )
 }

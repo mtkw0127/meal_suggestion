@@ -4,6 +4,8 @@ fun MainViewController(
     onClickTakePhoto: () -> Unit,
 ) = ComposeUIViewController {
     App(
+        answer = "",
         onClickTakePhoto = onClickTakePhoto,
+        createBanner = {},
     )
 }
