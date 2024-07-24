@@ -17,12 +17,15 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
@@ -55,12 +58,18 @@ class CameraActivity : ComponentActivity() {
             Box {
                 CameraPreview()
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = 10.dp),
+                    modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.BottomCenter
                 ) {
-                    Button(onClick = { takePhoto() }) {
+                    Button(
+                        shape = RoundedCornerShape(0.dp),
+                        onClick = { takePhoto() },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color(0xFF0000FF),
+                            contentColor = Color.White,
+                        ),
+                    ) {
                         Text(text = "撮影")
                     }
                 }

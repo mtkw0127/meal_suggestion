@@ -1,6 +1,7 @@
 package com.mtkw.meal_suggestion
 
 import App
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,6 +17,8 @@ class MainActivity : ComponentActivity() {
 
     private val capturedImage = MutableStateFlow<String?>(null)
 
+    private val viewModel = MainViewModel()
+
     private val cameraLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK && result.data != null) {
@@ -27,18 +30,26 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             val capturedImage by capturedImage.collectAsState()
+            val answer by viewModel.answer.collectAsState()
             App(
+                answer = answer,
                 capturedImage = capturedImage,
                 onClickTakePhoto = {
                     cameraLauncher.launch(CameraActivity.createIntent(this))
                 },
                 onClickSendPhoto = {
-
+                    val bitmap = BitmapFactory.decodeFile(capturedImage)
+                    viewModel.requestAnswerToAi(bitmap)
                 },
                 onBackToTakePhoto = {
                     this@MainActivity.capturedImage.update { null }
+                },
+                onClickAgain = {
+                    val bitmap = BitmapFactory.decodeFile(capturedImage)
+                    viewModel.requestAnswerToAi(bitmap)
                 }
             )
         }
@@ -48,5 +59,7 @@ class MainActivity : ComponentActivity() {
 @Preview
 @Composable
 fun AppAndroidPreview() {
-    App()
+    App(
+        answer = "Answer"
+    )
 }
