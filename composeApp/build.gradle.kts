@@ -12,7 +12,7 @@ plugins {
 
 play {
     track.set("internal")
-    serviceAccountCredentials = file("serviceAccountCredentials.json")
+    serviceAccountCredentials = file("../key/play-service-key.json")
     defaultToAppBundles.set(true)
 }
 
