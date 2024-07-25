@@ -23,7 +23,7 @@ jobs:
           echo $AI_API_KEY >> local.properties
       - name: build
         run: |
-          ./gradlew publishToReleaseBundle
+          ./gradlew publishReleaseBundle
         env:
           STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
