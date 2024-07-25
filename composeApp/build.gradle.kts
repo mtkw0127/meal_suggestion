@@ -7,6 +7,13 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.secretsGradlePlugin)
+    alias(libs.plugins.triplet)
+}
+
+play {
+    track.set("internal")
+    serviceAccountCredentials = file("serviceAccountCredentials.json")
+    defaultToAppBundles.set(true)
 }
 
 kotlin {

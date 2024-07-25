@@ -10,6 +10,7 @@ pluginManagement {
                 includeGroupAndSubgroups("com.google")
             }
         }
+        maven("https://oss.sonatype.org/content/repositories/snapshots")
         mavenCentral()
         gradlePluginPortal()
     }
