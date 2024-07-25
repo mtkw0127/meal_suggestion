@@ -18,6 +18,7 @@ jobs:
           SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           AI_API_KEY: ${{ secrets.AI_API_KEY }}
         run: |
+          mkdir key
           echo $SERVICE_ACCOUNT_JSON > key/play-service-key.json
           echo $AI_API_KEY >> local.properties
       - name: build
