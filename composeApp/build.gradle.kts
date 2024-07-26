@@ -12,7 +12,7 @@ plugins {
 
 play {
     track.set("internal")
-    serviceAccountCredentials = file("serviceAccountCredentials.json")
+    serviceAccountCredentials = file("../key/play-service-key.json")
     defaultToAppBundles.set(true)
 }
 
@@ -72,16 +72,26 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.1.0"
     }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    signingConfigs {
+        create("release") {
+            storeFile = file("../key/release.jks")
+            storePassword = System.getenv("STORE_PASSWORD")
+            keyPassword = System.getenv("KEY_PASSWORD")
+            keyAlias = System.getenv("KEY_ALIAS")
+        }
+    }
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
+            isDebuggable = false
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {

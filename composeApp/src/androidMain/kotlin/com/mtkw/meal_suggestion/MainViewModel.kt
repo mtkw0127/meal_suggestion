@@ -8,6 +8,7 @@ import com.google.ai.client.generativeai.type.content
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.regex.Pattern
 
 class MainViewModel : ViewModel() {
     private val generativeModel = GenerativeModel(
@@ -20,16 +21,28 @@ class MainViewModel : ViewModel() {
     private val _answer = MutableStateFlow("")
     val answer = _answer.asStateFlow()
 
+    private val regex = Pattern.compile("料理名：(.*)\n").toRegex()
+
     fun requestAnswerToAi(
         bitmap: Bitmap,
+        anotherMeal: Boolean,
     ) {
         viewModelScope.launch {
+            val result = regex.find(_answer.value)
+            val mealName = result?.groupValues?.firstOrNull()
+            val prompt = createPrompt(
+                personNum = 2,
+            ).let {
+                if (anotherMeal) {
+                    "$it\n$mealName 以外の料理をお願いします。"
+                } else {
+                    it
+                }
+            }
             val input = content {
                 image(bitmap)
                 text(
-                    createPrompt(
-                        personNum = 2,
-                    )
+                    prompt
                 )
             }
             val response = generativeModel.generateContent(input)
@@ -55,7 +68,10 @@ class MainViewModel : ViewModel() {
             [回答形式2]
             写真に食材が写っている場合は以下の形式で回答してください。
             「...」の箇所は食材の数や手順の数に応じて増減することを意味しています。
-            AAAには料理名を記載してください。BBB、CCCには食材名と分量を記載してください。
+            AAAには料理名を記載してください。
+            BBB、CCCには食材名と分量を記載してください。
+            食材名の内、写真に存在する食材には⭐︎をつけてください。
+            手順においては⭐︎をつける必要はありません。
             
             料理名：AAA(${personNum}人分)
             BBB(分量)
@@ -69,5 +85,13 @@ class MainViewModel : ViewModel() {
             ...
         """
         return prompt
+    }
+
+    fun clearAll() {
+        _answer.value = ""
+    }
+
+    fun updateAnswer(it: String) {
+        _answer.value = it
     }
 }
