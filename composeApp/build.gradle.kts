@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.secretsGradlePlugin)
     alias(libs.plugins.triplet)
+    alias(libs.plugins.google.services)
 }
 
 play {
@@ -45,6 +46,9 @@ kotlin {
             implementation(libs.camera.view)
             implementation(libs.ai)
             implementation(libs.google.playServices.ads)
+            implementation(project.dependencies.platform(libs.firebase.bom))
+            implementation(libs.firebase.analytics)
+            implementation(libs.firebase.crashlytics.ktx)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -80,6 +84,9 @@ android {
         }
     }
     signingConfigs {
+        getByName("debug") {
+
+        }
         create("release") {
             storeFile = file("../key/release.jks")
             storePassword = System.getenv("STORE_PASSWORD")
@@ -88,6 +95,11 @@ android {
         }
     }
     buildTypes {
+        getByName("debug") {
+            isMinifyEnabled = false
+            isDebuggable = true
+            applicationIdSuffix = ".debug"
+        }
         getByName("release") {
             isMinifyEnabled = false
             isDebuggable = false

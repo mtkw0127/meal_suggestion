@@ -18,6 +18,7 @@ kotlin = "2.0.0"
 google-play-services = "23.2.0"
 
 [libraries]
+firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-ktx" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -36,6 +37,8 @@ coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil3"
 coil-compose-core = { module = "io.coil-kt.coil3:coil-compose-core", version.ref = "coil3" }
 ai = { module = "com.google.ai.client.generativeai:generativeai", version = "0.9.0" }
 google-playServices-ads = { group = "com.google.android.gms", name = "play-services-ads-lite", version.ref = "google-play-services" }
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version = "33.1.2" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -44,4 +47,6 @@ jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 secretsGradlePlugin = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version = "2.0.1" }
+google-services = { id = "com.google.gms.google-services", version = "4.4.2" }
 triplet = { id = "com.github.triplet.play", version = "3.10.1" }
+crashlytics = { id = "com.google.firebase.crashlytics", version = "3.0.2" }
