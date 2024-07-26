@@ -7,7 +7,9 @@ xcuserdata
 local.properties
 composeApp/src/release/*
 composeApp/src/debug/*
+!.gitignore
 release.jks
+key/*
 *.jks
 .idea
 .DS_Store
