@@ -79,9 +79,19 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    signingConfigs {
+        create("release") {
+            storeFile = file("../key/release.jks")
+            storePassword = System.getenv("STORE_PASSWORD")
+            keyPassword = System.getenv("KEY_PASSWORD")
+            keyAlias = System.getenv("KEY_ALIAS")
+        }
+    }
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
+            isDebuggable = false
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {

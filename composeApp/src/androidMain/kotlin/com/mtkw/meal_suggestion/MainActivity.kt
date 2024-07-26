@@ -10,8 +10,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.viewinterop.AndroidView
+import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize.FULL_BANNER
 import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -21,6 +24,8 @@ class MainActivity : ComponentActivity() {
     private val capturedImage = MutableStateFlow<String?>(null)
 
     private val viewModel = MainViewModel()
+
+    private var rewardedAd: RewardedAd? = null
 
     private val cameraLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -52,27 +57,55 @@ class MainActivity : ComponentActivity() {
                             setAdSize(FULL_BANNER)
                         }
                         scope.launch {
-                            com.google.android.gms.ads.AdRequest.Builder().build()
+                            AdRequest.Builder().build()
                                 .let { adView.loadAd(it) }
                         }
                         adView
                     })
                 },
                 onClickTakePhoto = {
+                    this@MainActivity.capturedImage.update { null }
+                    viewModel.clearAll()
                     cameraLauncher.launch(CameraActivity.createIntent(this))
                 },
                 onClickSendPhoto = {
-                    val bitmap = BitmapFactory.decodeFile(capturedImage)
-                    viewModel.requestAnswerToAi(bitmap)
+                    requestAdAndGetAnswer(
+                        anotherMeal = false
+                    )
                 },
                 onBackToTakePhoto = {
                     this@MainActivity.capturedImage.update { null }
                 },
                 onClickAgain = {
-                    val bitmap = BitmapFactory.decodeFile(capturedImage)
-                    viewModel.requestAnswerToAi(bitmap)
+                    requestAdAndGetAnswer(
+                        anotherMeal = true
+                    )
                 }
             )
         }
+    }
+
+    private fun requestAdAndGetAnswer(
+        anotherMeal: Boolean,
+    ) {
+        val path = capturedImage.value ?: return
+        val adRequest = AdRequest.Builder().build()
+        RewardedAd.load(
+            this,
+            if (BuildConfig.DEBUG) {
+                "ca-app-pub-3940256099942544/5224354917"
+            } else {
+                "ca-app-pub-2002859886618281/7070172044"
+            },
+            adRequest,
+            object : RewardedAdLoadCallback() {
+                override fun onAdLoaded(ad: RewardedAd) {
+                    rewardedAd = ad
+                    ad.show(this@MainActivity) {}
+                    val bitmap = BitmapFactory.decodeFile(path)
+                    viewModel.requestAnswerToAi(bitmap, anotherMeal)
+                }
+            }
+        )
     }
 }

@@ -18,16 +18,13 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-@Preview
 fun App(
     answer: String,
     capturedImage: String? = null,
@@ -52,7 +49,7 @@ fun App(
                                 text = "再撮影",
                                 onClick = onClickTakePhoto,
                             )
-                            if (answer == "写真には食材が写っていません。") {
+                            if (answer.contains("写っていません。").not()) {
                                 Spacer(Modifier.size(2.dp))
                                 CustomButton(
                                     text = "別の料理を要求",
@@ -84,12 +81,7 @@ fun App(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .background(
-                        Brush.verticalGradient(
-                            listOf(
-                                Color(0xFF0000FF).copy(alpha = 0.3f),
-                                Color(0xFF00FF00).copy(alpha = 0.3f),
-                            )
-                        )
+                        Color(0xFF3FB5FF).copy(0.2F)
                     )
                     .padding(horizontal = 16.dp)
                     .fillMaxSize()
