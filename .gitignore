@@ -7,6 +7,8 @@ xcuserdata
 local.properties
 composeApp/src/release/*
 composeApp/src/debug/*
+release.jks
+*.jks
 .idea
 .DS_Store
 captures
