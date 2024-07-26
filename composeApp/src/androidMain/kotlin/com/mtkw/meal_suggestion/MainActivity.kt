@@ -80,6 +80,9 @@ class MainActivity : ComponentActivity() {
                     requestAdAndGetAnswer(
                         anotherMeal = true
                     )
+                },
+                updateAnswer = {
+                    viewModel.updateAnswer(it)
                 }
             )
         }

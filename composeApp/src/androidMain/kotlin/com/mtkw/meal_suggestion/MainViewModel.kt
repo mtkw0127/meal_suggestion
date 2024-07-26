@@ -90,4 +90,8 @@ class MainViewModel : ViewModel() {
     fun clearAll() {
         _answer.value = ""
     }
+
+    fun updateAnswer(it: String) {
+        _answer.value = it
+    }
 }
