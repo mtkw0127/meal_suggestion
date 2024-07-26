@@ -15,6 +15,7 @@ import com.google.android.gms.ads.AdSize.FULL_BANNER
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -26,6 +27,37 @@ class MainActivity : ComponentActivity() {
     private val viewModel = MainViewModel()
 
     private var rewardedAd: RewardedAd? = null
+
+    private val firebaseAnalytics: FirebaseAnalytics
+        get() = (application as MealSuggestionApplication).firebaseAnalytics
+
+    private fun onTakePhotoLog() {
+        firebaseAnalytics.logEvent(
+            "on_take_photo",
+            Bundle()
+        )
+    }
+
+    private fun onClickAgain() {
+        firebaseAnalytics.logEvent(
+            "on_click_request_answer_again",
+            Bundle()
+        )
+    }
+
+    private fun onClickCopy() {
+        firebaseAnalytics.logEvent(
+            "on_click_copy",
+            Bundle()
+        )
+    }
+
+    private fun onRequestAnswer() {
+        firebaseAnalytics.logEvent(
+            "on_request_answer",
+            Bundle()
+        )
+    }
 
     private val cameraLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -64,11 +96,13 @@ class MainActivity : ComponentActivity() {
                     })
                 },
                 onClickTakePhoto = {
+                    onTakePhotoLog()
                     this@MainActivity.capturedImage.update { null }
                     viewModel.clearAll()
                     cameraLauncher.launch(CameraActivity.createIntent(this))
                 },
                 onClickSendPhoto = {
+                    onRequestAnswer()
                     requestAdAndGetAnswer(
                         anotherMeal = false
                     )
@@ -77,12 +111,16 @@ class MainActivity : ComponentActivity() {
                     this@MainActivity.capturedImage.update { null }
                 },
                 onClickAgain = {
+                    onClickAgain()
                     requestAdAndGetAnswer(
                         anotherMeal = true
                     )
                 },
                 updateAnswer = {
                     viewModel.updateAnswer(it)
+                },
+                onClickCopy = {
+                    onClickCopy()
                 }
             )
         }

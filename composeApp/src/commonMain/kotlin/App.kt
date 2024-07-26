@@ -39,6 +39,7 @@ fun App(
     onBackToTakePhoto: () -> Unit = {},
     onClickAgain: () -> Unit = {},
     updateAnswer: (String) -> Unit,
+    onClickCopy: () -> Unit,
 ) {
     MaterialTheme {
         Scaffold(
@@ -99,6 +100,7 @@ fun App(
                         answer = answer,
                         imagePath = capturedImage,
                         updateAnswer = updateAnswer,
+                        onClickCopy = onClickCopy
                     )
                 } else {
                     CapturedAndSentToGemini(
@@ -134,6 +136,7 @@ private fun Answer(
     answer: String,
     imagePath: String,
     updateAnswer: (String) -> Unit = {},
+    onClickCopy: () -> Unit,
 ) {
     val clipboardManager = LocalClipboardManager.current
 
@@ -152,6 +155,7 @@ private fun Answer(
         ) {
             Button(
                 onClick = {
+                    onClickCopy()
                     clipboardManager.setText(AnnotatedString(answer))
                 },
             ) {
