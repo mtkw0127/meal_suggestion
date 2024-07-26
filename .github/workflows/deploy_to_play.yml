@@ -1,8 +1,10 @@
 name: deploy_to_play
+
 on:
-  push:
+  pull_request:
     branches:
-      - work/release-workflow
+      - master
+    types: [ closed ]
 
 jobs:
   build:

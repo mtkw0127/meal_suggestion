@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -21,6 +22,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -81,7 +84,7 @@ fun App(
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
+                verticalArrangement = Arrangement.Top,
                 modifier = Modifier
                     .background(
                         Color(0xFF3FB5FF).copy(0.2F)
@@ -132,6 +135,8 @@ private fun Answer(
     imagePath: String,
     updateAnswer: (String) -> Unit = {},
 ) {
+    val clipboardManager = LocalClipboardManager.current
+
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
@@ -142,7 +147,22 @@ private fun Answer(
         verticalArrangement = Arrangement.Top,
     ) {
         Box(
-            modifier = Modifier.background(Color.White).padding(10.dp)
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.CenterEnd,
+        ) {
+            Button(
+                onClick = {
+                    clipboardManager.setText(AnnotatedString(answer))
+                },
+            ) {
+                Text("Copy")
+            }
+        }
+        Box(
+            modifier = Modifier
+                .background(Color.White)
+                .padding(10.dp)
+                .fillMaxWidth()
         ) {
             BasicTextField(
                 value = answer,
@@ -161,22 +181,33 @@ private fun Answer(
 
 @Composable
 private fun NotYetCaptured() {
-    Text(
-        text = "写真を送信して\nAIに料理を考えてもらいましょう！",
-        fontWeight = FontWeight.W600,
-        textAlign = TextAlign.Center,
-    )
-    Spacer(Modifier.size(8.dp))
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = "写真を送信して\nAIに料理を考えてもらいましょう！",
+            fontWeight = FontWeight.W600,
+            textAlign = TextAlign.Center,
+        )
+        Spacer(Modifier.size(8.dp))
+    }
 }
 
 @Composable
 private fun CapturedAndSentToGemini(
     capturedImage: String,
 ) {
-    AsyncImage(model = capturedImage, contentDescription = null)
-    Spacer(Modifier.size(16.dp))
-    Text(
-        text = "食材を撮影できましたか？",
-        fontWeight = FontWeight.W600,
-    )
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        AsyncImage(model = capturedImage, contentDescription = null)
+        Spacer(Modifier.size(16.dp))
+        Text(
+            text = "食材を撮影できましたか？",
+            fontWeight = FontWeight.W600,
+        )
+    }
 }
