@@ -1,3 +1,4 @@
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,10 +29,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import mealsuggestion.composeapp.generated.resources.Res
+import mealsuggestion.composeapp.generated.resources._30226224_m
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun App(
     answer: String,
+    isSample: Boolean,
     capturedImage: String? = null,
     createBanner: @Composable () -> Unit,
     onClickTakePhoto: () -> Unit = {},
@@ -98,12 +103,14 @@ fun App(
                 } else if (answer.isNotBlank()) {
                     Answer(
                         answer = answer,
+                        isSample = isSample,
                         imagePath = capturedImage,
                         updateAnswer = updateAnswer,
                         onClickCopy = onClickCopy
                     )
                 } else {
                     CapturedAndSentToGemini(
+                        isSample = isSample,
                         capturedImage = capturedImage,
                     )
                 }
@@ -137,6 +144,7 @@ private fun Answer(
     imagePath: String,
     updateAnswer: (String) -> Unit = {},
     onClickCopy: () -> Unit,
+    isSample: Boolean,
 ) {
     val clipboardManager = LocalClipboardManager.current
 
@@ -175,11 +183,17 @@ private fun Answer(
                 },
             )
         }
-        Spacer(Modifier.size(16.dp))
-        AsyncImage(
-            model = imagePath,
-            contentDescription = null,
-        )
+        if (isSample) {
+            Image(
+                painter = painterResource(Res.drawable._30226224_m),
+                contentDescription = null
+            )
+        } else {
+            AsyncImage(
+                model = imagePath,
+                contentDescription = null,
+            )
+        }
     }
 }
 
@@ -201,13 +215,24 @@ private fun NotYetCaptured() {
 @Composable
 private fun CapturedAndSentToGemini(
     capturedImage: String,
+    isSample: Boolean,
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        AsyncImage(model = capturedImage, contentDescription = null)
+        if (isSample) {
+            Image(
+                painter = painterResource(Res.drawable._30226224_m),
+                contentDescription = null
+            )
+        } else {
+            AsyncImage(
+                model = capturedImage,
+                contentDescription = null,
+            )
+        }
         Spacer(Modifier.size(16.dp))
         Text(
             text = "食材を撮影できましたか？",

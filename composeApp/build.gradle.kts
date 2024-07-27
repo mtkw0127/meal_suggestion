@@ -114,6 +114,9 @@ android {
         compose = true
         buildConfig = true
     }
+    compose.resources {
+        publicResClass = true
+    }
     dependencies {
         debugImplementation(compose.uiTooling)
     }

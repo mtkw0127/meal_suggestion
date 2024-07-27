@@ -1,6 +1,7 @@
 package com.mtkw.meal_suggestion
 
 import App
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -23,6 +24,8 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
 
     private val capturedImage = MutableStateFlow<String?>(null)
+    private val sampleBitmap = MutableStateFlow<Bitmap?>(null)
+    private val sampleMode = false
 
     private val viewModel = MainViewModel()
 
@@ -65,6 +68,9 @@ class MainActivity : ComponentActivity() {
                 CameraActivity.obtainPhotoUrl(checkNotNull(result.data))?.let { uri ->
                     capturedImage.value = uri.path
                 }
+                assets.open("sample.jpg").use { inputStream ->
+                    sampleBitmap.value = BitmapFactory.decodeStream(inputStream)
+                }
             }
         }
 
@@ -77,6 +83,7 @@ class MainActivity : ComponentActivity() {
             val scope = rememberCoroutineScope()
             App(
                 answer = answer,
+                isSample = sampleMode,
                 capturedImage = capturedImage,
                 createBanner = {
                     AndroidView(factory = { context ->
@@ -143,8 +150,12 @@ class MainActivity : ComponentActivity() {
                 override fun onAdLoaded(ad: RewardedAd) {
                     rewardedAd = ad
                     ad.show(this@MainActivity) {}
-                    val bitmap = BitmapFactory.decodeFile(path)
-                    viewModel.requestAnswerToAi(bitmap, anotherMeal)
+                    val bitmap = if (sampleMode.not()) {
+                        BitmapFactory.decodeFile(path)
+                    } else {
+                        sampleBitmap.value
+                    }
+                    viewModel.requestAnswerToAi(checkNotNull(bitmap), anotherMeal)
                 }
             }
         )
