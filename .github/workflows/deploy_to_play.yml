@@ -20,10 +20,12 @@ jobs:
           SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           AI_API_KEY: ${{ secrets.AI_API_KEY }}
           GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+          MODEL_NAME: ${{ secrets.MODEL_NAME }}
         run: |
           mkdir key
           echo $SERVICE_ACCOUNT_JSON > key/play-service-key.json
           echo apiKey=$AI_API_KEY >> local.properties
+          echo modelName=MODEL_NAME >> local.properties
           echo $GOOGLE_SERVICES_JSON > composeApp/src/release/google-services.json
       - name: build
         run: |

@@ -13,7 +13,7 @@ import java.util.regex.Pattern
 class MainViewModel : ViewModel() {
     private val generativeModel = GenerativeModel(
         // The Gemini 1.5 models are versatile and work with most use cases
-        modelName = "gemini-1.5-flash",
+        modelName = BuildConfig.modelName,
         // Access your API key as a Build Configuration variable (see "Set up your API key" above)
         apiKey = BuildConfig.apiKey
     )
