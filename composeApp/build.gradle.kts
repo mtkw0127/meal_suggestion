@@ -101,9 +101,11 @@ android {
             applicationIdSuffix = ".debug"
         }
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             isDebuggable = false
             signingConfig = signingConfigs.getByName("release")
+            getDefaultProguardFile("proguard-android-optimize.txt")
         }
     }
     compileOptions {
