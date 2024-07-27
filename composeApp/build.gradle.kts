@@ -75,7 +75,7 @@ android {
         applicationId = "com.mtkw.meal_suggestion"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 5
+        versionCode = 6
         versionName = "0.1.0"
     }
     packaging {
