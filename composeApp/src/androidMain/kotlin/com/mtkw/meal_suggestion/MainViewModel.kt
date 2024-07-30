@@ -21,30 +21,37 @@ class MainViewModel : ViewModel() {
 
     private val regex = Pattern.compile("料理名：(.*)\n").toRegex()
 
+    var isLoading = false
+
     fun requestAnswerToAi(
         bitmap: Bitmap,
         anotherMeal: Boolean,
     ) {
+        isLoading = true
         viewModelScope.launch {
-            val result = regex.find(_answer.value)
-            val mealName = result?.groupValues?.firstOrNull()
-            val prompt = createPrompt(
-                personNum = 2,
-            ).let {
-                if (anotherMeal) {
-                    "$it\n$mealName 以外の料理をお願いします。"
-                } else {
-                    it
+            try {
+                val result = regex.find(_answer.value)
+                val mealName = result?.groupValues?.firstOrNull()
+                val prompt = createPrompt(
+                    personNum = 2,
+                ).let {
+                    if (anotherMeal) {
+                        "$it\n$mealName 以外の料理をお願いします。"
+                    } else {
+                        it
+                    }
                 }
+                val input = content {
+                    image(bitmap)
+                    text(
+                        prompt
+                    )
+                }
+                val response = generativeModel.generateContent(input)
+                _answer.value = response.text.orEmpty()
+            } finally {
+                isLoading = false
             }
-            val input = content {
-                image(bitmap)
-                text(
-                    prompt
-                )
-            }
-            val response = generativeModel.generateContent(input)
-            _answer.value = response.text.orEmpty()
         }
     }
 

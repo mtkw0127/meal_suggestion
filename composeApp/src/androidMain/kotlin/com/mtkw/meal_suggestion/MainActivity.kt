@@ -136,6 +136,7 @@ class MainActivity : ComponentActivity() {
     private fun requestAdAndGetAnswer(
         anotherMeal: Boolean,
     ) {
+        if (viewModel.isLoading) return
         val path = capturedImage.value ?: return
         val adRequest = AdRequest.Builder().build()
         RewardedAd.load(
