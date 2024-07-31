@@ -1,6 +1,8 @@
 package com.mtkw.meal_suggestion
 
 import android.graphics.Bitmap
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.ai.client.generativeai.GenerativeModel
@@ -16,6 +18,9 @@ class MainViewModel : ViewModel() {
         apiKey = BuildConfig.apiKey
     )
 
+    private val _apiRequestNum = MutableLiveData(0)
+    val apiRequestNum: LiveData<Int> = _apiRequestNum
+
     private val _answer = MutableStateFlow("")
     val answer = _answer.asStateFlow()
 
@@ -28,6 +33,7 @@ class MainViewModel : ViewModel() {
         anotherMeal: Boolean,
     ) {
         isLoading = true
+        _apiRequestNum.value = _apiRequestNum.value?.plus(1)
         viewModelScope.launch {
             try {
                 val result = regex.find(_answer.value)

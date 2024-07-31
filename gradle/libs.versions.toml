@@ -16,6 +16,8 @@ coil3 = "3.0.0-alpha06"
 junit = "4.13.2"
 kotlin = "2.0.0"
 google-play-services = "23.2.0"
+review = "2.0.1"
+reviewKtx = "2.0.1"
 
 [libraries]
 firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-ktx" }
@@ -39,6 +41,9 @@ ai = { module = "com.google.ai.client.generativeai:generativeai", version = "0.9
 google-playServices-ads = { group = "com.google.android.gms", name = "play-services-ads-lite", version.ref = "google-play-services" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version = "33.1.2" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+review = { module = "com.google.android.play:review", version.ref = "review" }
+review-ktx = { module = "com.google.android.play:review-ktx", version.ref = "reviewKtx" }
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

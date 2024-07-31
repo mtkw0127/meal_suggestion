@@ -4,6 +4,8 @@ import App
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.os.Handler
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -16,6 +18,7 @@ import com.google.android.gms.ads.AdSize.FULL_BANNER
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import com.google.android.play.core.review.ReviewManagerFactory
 import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -76,6 +79,26 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        viewModel.apiRequestNum.observe(this) {
+            if (it != 0 && (it == 2 || it % 5 == 0)) {
+                Handler(mainLooper).postDelayed({
+                    ReviewManagerFactory.create(this).requestReviewFlow()
+                        .addOnSuccessListener { reviewInfo ->
+                            ReviewManagerFactory.create(this).launchReviewFlow(this, reviewInfo)
+                                .addOnSuccessListener {
+
+                                }.addOnFailureListener {
+                                    it.printStackTrace()
+                                }
+                        }
+                        .addOnFailureListener {
+                            it.printStackTrace()
+                            Toast.makeText(this, "Review request failed", Toast.LENGTH_SHORT).show()
+                        }
+                }, 10000)
+            }
+        }
 
         setContent {
             val capturedImage by capturedImage.collectAsState()
