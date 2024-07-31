@@ -161,27 +161,37 @@ class MainActivity : ComponentActivity() {
     ) {
         if (viewModel.isLoading) return
         val path = capturedImage.value ?: return
-        val adRequest = AdRequest.Builder().build()
-        RewardedAd.load(
-            this,
-            if (BuildConfig.DEBUG) {
-                "ca-app-pub-3940256099942544/5224354917"
+        // 初回は広告なしで見れる。２回目以降はリワード広告必須
+        if (viewModel.apiRequestNum.value == 0) {
+            val bitmap = if (sampleMode.not()) {
+                BitmapFactory.decodeFile(path)
             } else {
-                "ca-app-pub-2002859886618281/7070172044"
-            },
-            adRequest,
-            object : RewardedAdLoadCallback() {
-                override fun onAdLoaded(ad: RewardedAd) {
-                    rewardedAd = ad
-                    ad.show(this@MainActivity) {}
-                    val bitmap = if (sampleMode.not()) {
-                        BitmapFactory.decodeFile(path)
-                    } else {
-                        sampleBitmap.value
-                    }
-                    viewModel.requestAnswerToAi(checkNotNull(bitmap), anotherMeal)
-                }
+                sampleBitmap.value
             }
-        )
+            viewModel.requestAnswerToAi(checkNotNull(bitmap), anotherMeal)
+        } else {
+            val adRequest = AdRequest.Builder().build()
+            RewardedAd.load(
+                this,
+                if (BuildConfig.DEBUG) {
+                    "ca-app-pub-3940256099942544/5224354917"
+                } else {
+                    "ca-app-pub-2002859886618281/7070172044"
+                },
+                adRequest,
+                object : RewardedAdLoadCallback() {
+                    override fun onAdLoaded(ad: RewardedAd) {
+                        rewardedAd = ad
+                        ad.show(this@MainActivity) {}
+                        val bitmap = if (sampleMode.not()) {
+                            BitmapFactory.decodeFile(path)
+                        } else {
+                            sampleBitmap.value
+                        }
+                        viewModel.requestAnswerToAi(checkNotNull(bitmap), anotherMeal)
+                    }
+                }
+            )
+        }
     }
 }
